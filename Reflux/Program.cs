@@ -137,18 +137,18 @@ namespace Reflux
                 if (!correctVersion)
                 {
                     var result = OffsetSearcher.SearchNewOffsets();
-                        Console.WriteLine("New offsets found:");
-                        Console.WriteLine($"SongList: {result.SongList:X}");
-                        Console.WriteLine($"UnlockData: {result.UnlockData:X}");
-                        Console.WriteLine($"PlaySettings: {result.PlaySettings:X}");
-                        Console.WriteLine($"PlayData: {result.PlayData:X}");
-                        Console.WriteLine($"CurrentSong: {result.CurrentSong:X}");
-                        Console.WriteLine($"JudgeData: {result.JudgeData:X}");
-                        Console.WriteLine($"DataMap: {result.DataMap:X}");
-                        Console.WriteLine("Applying new offsets and trying to continue...");
-                        Offsets.SaveOffsets(foundVersion, result);
-                        correctVersion = true;
-                    }
+                    Console.WriteLine("New offsets found:");
+                    Console.WriteLine($"SongList: {result.SongList:X}");
+                    Console.WriteLine($"UnlockData: {result.UnlockData:X}");
+                    Console.WriteLine($"PlaySettings: {result.PlaySettings:X}");
+                    Console.WriteLine($"PlayData: {result.PlayData:X}");
+                    Console.WriteLine($"CurrentSong: {result.CurrentSong:X}");
+                    Console.WriteLine($"JudgeData: {result.JudgeData:X}");
+                    Console.WriteLine($"DataMap: {result.DataMap:X}");
+                    Console.WriteLine("Applying new offsets and trying to continue...");
+                    Offsets.SaveOffsets(foundVersion, result);
+                    correctVersion = true;
+                }
 
                 Network.UpdateSupportFile("encodingfixes");
                 Network.UpdateSupportFile("customtypes");
@@ -340,7 +340,10 @@ namespace Reflux
                                             var entry = Tracker.trackerDb[c];
                                             entry.grade = (Grade)Math.Max((int)entry.grade, (int)latestData.Grade);
                                             entry.lamp = (Lamp)Math.Max((int)entry.lamp, (int)latestData.Lamp);
-                                            entry.misscount = Math.Min(entry.misscount, latestData.MissCount);
+                                            if (!latestData.PrematureEnd && (latestData.Lamp != Lamp.F || (latestData.Lamp == Lamp.F && !latestData.Gauge.Contains("HARD"))))
+                                            {
+                                                entry.misscount = Math.Min(entry.misscount, latestData.MissCount);
+                                            }
                                             entry.ex_score = Math.Max(entry.ex_score, latestData.ExScore);
                                             Tracker.trackerDb[c] = entry;
                                             Tracker.SaveTracker();
