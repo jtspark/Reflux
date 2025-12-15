@@ -274,6 +274,12 @@ namespace Reflux
                     songInfo.artist = knownEncodingIssues[songInfo.artist];
                     Debug($"Fixed encoding issue \"{old}\" with \"{songInfo.artist}\"");
                 }
+                if (knownEncodingIssues.ContainsKey(songInfo.genre))
+                {
+                    var old = songInfo.genre;
+                    songInfo.genre = knownEncodingIssues[songInfo.genre];
+                    Debug($"Fixed encoding issue \"{old}\" with \"{songInfo.genre}\"");
+                }
                 if (!result.ContainsKey(songInfo.ID))
                 {
                     result.Add(songInfo.ID, songInfo);
