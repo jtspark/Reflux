@@ -208,15 +208,16 @@ namespace Reflux
         public static GameState FetchGameState(GameState currentState)
         {
             short word = 4;
-            short offset = 54;
+            short offset_P1 = 54;
+            short offset_P2 = 56;
 
-            var marker = ReadInt32(Offsets.JudgeData, word * offset);
+            var marker = ReadInt32(Offsets.JudgeData, word * offset_P1) + ReadInt32(Offsets.JudgeData, word * offset_P2);
             if (marker != 0)
             {
 
                 // In case it has shifted for whatever reason
 
-                marker = ReadInt32(Offsets.JudgeData, word * (offset + 1));
+                marker = ReadInt32(Offsets.JudgeData, word * (offset_P1 + 1)) + ReadInt32(Offsets.JudgeData, word * (offset_P2 + 1));
                 if (marker != 0)
                 {
                     return GameState.playing;
