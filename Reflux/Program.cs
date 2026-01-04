@@ -318,6 +318,8 @@ namespace Reflux
                         Utils.Debug(newstate.ToString());
                         if (newstate != state)
                         {
+                            state = newstate;
+
                             Console.Clear();
                             Console.WriteLine($"STATUS:{(newstate != GameState.playing ? " NOT" : "")} PLAYING");
                             if (newstate == GameState.resultScreen)
@@ -325,6 +327,13 @@ namespace Reflux
                                 Thread.Sleep(1000); /* Sleep to avoid race condition */
                                 var latestData = new PlayData();
                                 latestData.Fetch();
+
+                                /* Even if you perform a quick retry, depending on the timing, it may be judged as the result screen */
+                                if (latestData.QuickRetry)
+                                {
+                                    continue;
+                                }
+
                                 if (latestData.DataAvailable)
                                 {
                                     if (Config.Save_remote)
@@ -455,7 +464,6 @@ namespace Reflux
                                 }
                             }
                         }
-                        state = newstate;
 
                         if (state == GameState.songSelect)
                         {
@@ -470,14 +478,17 @@ namespace Reflux
                                 Network.ReportUnlocks(newUnlocks);
                             }
                         }
-
-                        Thread.Sleep(2000);
                     }
                     catch (Exception e)
                     {
                         Utils.Except(e, "MainLoop");
                     }
+                    finally
+                    {
+                        Thread.Sleep(2000);
+                    }
                 }
+
                 if (Config.Save_local)
                 {
                     Tracker.SaveTrackerData("tracker.tsv");
