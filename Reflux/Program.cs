@@ -23,6 +23,8 @@ namespace Reflux
 
         static void Main()
         {
+            Console.OutputEncoding = Encoding.GetEncoding("utf-8");
+
             Utils.CheckVersion();
             Config.Parse("config.ini");
 
