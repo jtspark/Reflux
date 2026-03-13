@@ -106,6 +106,7 @@ namespace Reflux
         public static extern bool ReadProcessMemory(int hProcess,
             Int64 lpBaseAddress, byte[] lpBuffer, int dwSize, ref int lpNumberOfBytesRead);
 
+        public static readonly int song_offset = 4 * 396;
         public static IntPtr handle;
         public static long playMarkerAddress = 0;
         public static bool playMarkerAvailable = false;
@@ -238,7 +239,8 @@ namespace Reflux
             if (!playMarkerAvailable) { return GameState.songSelect; }
             short word = 4;
 
-            var marker = ReadInt32(playMarkerAddress, 0);
+            //var marker = ReadInt32(playMarkerAddress, 0);
+            var marker = ReadInt32(Offsets.JudgeData, word * 52);
             if (marker != 0)
             {
                 return GameState.playing;
@@ -305,7 +307,7 @@ namespace Reflux
                     result.Add(songInfo.ID, songInfo);
                 }
 
-                current_position += 0x4B0;
+                current_position += song_offset;
 
             }
             songDb = result;
@@ -452,7 +454,7 @@ namespace Reflux
             short word = 4; /* Int32 */
             int offset = 0;
 
-            byte[] buffer = new byte[1200];
+            byte[] buffer = new byte[song_offset];
 
             ReadProcessMemory((int)handle, position, buffer, buffer.Length, ref bytesRead);
 
@@ -519,7 +521,7 @@ namespace Reflux
             };
 
 
-            var idarray = buffer.Skip(816).Take(4).ToArray();
+            var idarray = buffer.Skip(1200).Take(4).ToArray();
 
             var ID = BitConverter.ToInt32(idarray, 0).ToString("D5");
 
