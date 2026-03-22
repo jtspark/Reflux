@@ -223,7 +223,7 @@ namespace Reflux
             {
                 // Judge offset + 144 (get close to section with search pattern) + offset for second magic value + 6 32-bit integers later
                 string magicNumberAddress = (Offsets.JudgeData + 144 + judgeEnd.ElementAt(1)).ToString("X");
-                playMarkerAddress = Offsets.JudgeData + 144 + judgeEnd.ElementAt(1) + 4 * 7;
+                playMarkerAddress = Offsets.JudgeData + 144 + judgeEnd.ElementAt(1) + 4 * 9;
                 playMarkerAvailable = true;
             }
 
@@ -239,8 +239,7 @@ namespace Reflux
             if (!playMarkerAvailable) { return GameState.songSelect; }
             short word = 4;
 
-            //var marker = ReadInt32(playMarkerAddress, 0);
-            var marker = ReadInt32(Offsets.JudgeData, word * 52);
+            var marker = ReadInt32(playMarkerAddress, 0);
             if (marker != 0)
             {
                 return GameState.playing;
