@@ -57,19 +57,22 @@
 
         public void FetchPlayType()
         {
-            short word = 4;
-            short mode_offset = 1239;
-            short side_offset_P1 = 1287;
-            //short side_offset_P2 = 1288;
+            if (!Utils.playMarkerAvailable) { return; }
 
+            // It seems like it can be determined using either address.
+            // 0x1425C4750  0 = Single, 2 = Double
+            // 0x1425C4760  1 = Single, 2 = Double
+
+            short word = 4;
+            short mode_offset = 0x4d7;   // 0x1425C4760
             // mode: 1 = Single, 2 = Double
             var mode = Utils.ReadInt32(Offsets.PlayData, word * mode_offset);
-            // side: 1 = P1, 0 = P2 (only in Single mode)
-            var side = Utils.ReadInt32(Offsets.PlayData, word * side_offset_P1);
+            // side: 0 != P1, 0 = P2 (only in Single mode)
+            var side = Utils.ReadInt32(Utils.playMarkerAddress, word * 2);
 
-            playtype = mode == 1
-                ? side == 1 ? PlayType.P1 : PlayType.P2
-                : PlayType.DP;
+            playtype = mode == 2
+                ? PlayType.DP
+                : side != 0 ? PlayType.P1 : PlayType.P2;
         }
     }
 }
