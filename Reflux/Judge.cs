@@ -64,9 +64,9 @@
             // 0x1425C4760  1 = Single, 2 = Double
 
             short word = 4;
-            short mode_offset = 0x4d7;   // 0x1425C4760
+            int modeOffset = 0x4d7;   // 0x1425C4760
             // mode: 1 = Single, 2 = Double
-            var mode = Utils.ReadInt32(Offsets.PlayData, word * mode_offset);
+            var mode = Utils.ReadInt32(Offsets.PlayData, word * modeOffset);
             // side: 0 != P1, 0 = P2 (only in Single mode)
             var side = Utils.ReadInt32(Utils.playMarkerAddress, word * 2);
 
