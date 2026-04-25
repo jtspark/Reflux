@@ -61,6 +61,7 @@ namespace Reflux
         public string genre;
         public string[] bpms; /* SPB, SPN, SPH, SPA, SPL, DPB, DPN, DPH, DPA, DPL */
         public int folder;
+        public double[] notesRadars; /* SPB, SPN, SPH, SPA, SPL, DPB, DPN, DPH, DPA, DPL */
     }
     /// <summary>
     /// Information saved to the local tracker file
@@ -503,6 +504,7 @@ namespace Reflux
             string[] bpms = bpmList.ToArray();
 
             var noteCounts_bytes = buffer.Skip(offset).Take(slab).ToArray();
+            offset += slab * 3;
             var noteCounts = new int[] {
                 Utils.BytesToInt32(noteCounts_bytes, 0),
                 Utils.BytesToInt32(noteCounts_bytes, word),
@@ -515,6 +517,10 @@ namespace Reflux
                 Utils.BytesToInt32(noteCounts_bytes, word * 8),
                 Utils.BytesToInt32(noteCounts_bytes, word * 9)
             };
+
+            var notesRadars_qty = 60;     // B, N, H, A, L for SP and DP. (NOTES, PEAK, SCRATCH, SOF-LAN, CHARGE, CHORD)
+            var notesRadars_bytes = buffer.Skip(offset).Take(word * notesRadars_qty).ToArray();
+            var notesRadars = Enumerable.Range(0, notesRadars_qty).Select(i => Utils.BytesToInt32(notesRadars_bytes, word * i) / 100.0).ToArray();  // double
 
             var idarray = buffer.Skip(idPosition).Take(4).ToArray();
             var ID = BitConverter.ToInt32(idarray, 0).ToString("D5");
@@ -529,7 +535,8 @@ namespace Reflux
                 bpms = bpms,
                 totalNotes = noteCounts,
                 level = diff_levels,
-                folder = folder
+                folder = folder,
+                notesRadars = notesRadars
             };
 
             return song;

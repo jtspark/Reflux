@@ -240,6 +240,28 @@ namespace Reflux
                     File.WriteAllLines("songs.tsv", p.ToArray());
                 }
 
+                /* Notes Radars */
+                if (Config.Output_songlist)
+                {
+                    List<string> p = new List<string>() { "id\tdifficulty\tNOTES\tPEAK\tSCRATCH\tSOF-LAN\tCHARGE\tCHORD" };
+                    foreach (var v in Utils.songDb)
+                    {
+                        int pos = 0;
+                        foreach (var diff in Enum.GetValues(typeof(Difficulty)).Cast<Difficulty>())
+                        {
+                            double[] radars = Enumerable.Range(pos, 6)
+                                .Select(i => v.Value.notesRadars[i])
+                                .ToArray();
+                            if (radars.Any(r => r != 0))
+                            {
+                                p.Add($"{v.Key}\t{diff}\t{string.Join("\t", radars.Select(r => r.ToString("F2")))}");
+                            }
+                            pos += 6;
+                        }
+                    }
+                    File.WriteAllLines("radars.tsv", p.ToArray());
+                }
+
                 Utils.GetUnlockStates();
 
                 Console.WriteLine("Fetching song scoring data...");
