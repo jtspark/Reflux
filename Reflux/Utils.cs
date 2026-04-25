@@ -222,9 +222,9 @@ namespace Reflux
             var judgeEnd = indices.Take(3);
             if (judgeEnd.ElementAt(1) - judgeEnd.ElementAt(0) == 8 && judgeEnd.ElementAt(2) - judgeEnd.ElementAt(1) == 8)
             {
-                // Judge offset + 144 (get close to section with search pattern) + offset for second magic value + 8 32-bit integers later
+                // Judge offset + 144 (get close to section with search pattern) + offset for second magic value + 6 32-bit integers later
                 long magicNumberAddress = offset + judgeEnd.ElementAt(1);
-                playMarkerAddress = magicNumberAddress + (word * 8);
+                playMarkerAddress = magicNumberAddress + (word * 6);
                 playMarkerAvailable = true;
                 Console.WriteLine($"Found play state marker at {playMarkerAddress:X}");
             }
