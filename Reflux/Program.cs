@@ -438,6 +438,11 @@ namespace Reflux
                                 {
                                     Utils.Except(e, "ConsoleOutput");
                                 }
+                                if (Config.Save_local)
+                                {
+                                    Utils.Debug("Saving tracker data tsv");
+                                    Tracker.SaveTrackerData("tracker.tsv");
+                                }
                                 if (Config.Stream_Playstate)
                                 {
                                     Utils.Debug("Writing menu state to playstate.txt");
@@ -502,11 +507,6 @@ namespace Reflux
                         if (state == GameState.songSelect)
                         {
                             var newUnlocks = Utils.UpdateUnlockStates();
-                            if (Config.Save_local)
-                            {
-                                Utils.Debug("Saving tracker data tsv");
-                                Tracker.SaveTrackerData("tracker.tsv");
-                            }
                             if (Config.Save_remote && newUnlocks.Count > 0)
                             {
                                 Network.ReportUnlocks(newUnlocks);
