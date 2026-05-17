@@ -332,7 +332,7 @@ namespace Reflux
                             Console.WriteLine($"STATUS:{(newstate != GameState.playing ? " NOT" : "")} PLAYING");
                             if (newstate == GameState.resultScreen)
                             {
-                                Thread.Sleep(1000); /* Sleep to avoid race condition */
+                                Thread.Sleep(2000); /* Sleep to avoid race condition */
                                 var latestData = new PlayData();
                                 latestData.Fetch();
 
